@@ -3,11 +3,15 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from model_utils import tracker
+from simple_history.models import HistoricalRecords
+
 USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
+
 
 
 # basically is this:
 class Document(models.Model):
+    title = models.CharField(blank=True, max_length=500)
     content = models.TextField(blank=True)
 
     created_at = models.DateTimeField(default=timezone.now, blank=True, editable=False)
@@ -20,7 +24,37 @@ class Document(models.Model):
                                     related_name="%(app_label)s_%(class)s_modified_by", null=True,
                                     blank=True, on_delete=models.SET_NULL)
 
-    content_tracker = tracker.FieldTracker(fields=['content'])
+    is_active = models.NullBooleanField(default=True, editable=False)
+
+    content_tracker = tracker.FieldTracker()
+
+    historico_modificacoes = HistoricalRecords()
 
     def __unicode__(self):
         return "{}".format(self.content)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -3,3 +3,10 @@ django-extensions
 ipython
 bpython
 ptpython
+django-reversion
+django-reversion-extras
+# cleanerversion
+#-e git://github.com/luzfcb/django-versioning.git#egg=versioning
+django-debug-toolbar
+# -e git://github.com/treyhunner/django-simple-history.git#egg=django-simple-history
+django-simple-history

@@ -40,6 +40,10 @@ INSTALLED_APPS = (
     'core',
     'model_utils',
     'django_extensions',
+
+    'simple_history',
+    'debug_toolbar',
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -51,6 +55,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 )
 
 ROOT_URLCONF = 'documentos.urls'
