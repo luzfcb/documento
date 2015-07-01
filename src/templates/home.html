@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+
+{% block navbar %}
+{% endblock navbar %}
+
+{% block conteudo %}
+    
+    <div class="ui list">
+        <div class="item">
+            <a class="header" href="{% url "document_create" %}">Cadastrar Novo Documento</a>
+            <div class="description">
+               Vai para a pagina de cadastro de documentos chatos
+            </div>
+        </div>
+
+        <div class="item">
+            <a class="header" href="{% url "document_list" %}">Listar Documentos</a>
+            <div class="description">
+               Vai para a pagina que lista documentos chatos
+            </div>
+        </div>
+
+
+    </div>
+
+{% endblock conteudo %}

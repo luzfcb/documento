@@ -10,3 +10,4 @@ django-reversion-extras
 django-debug-toolbar
 # -e git://github.com/treyhunner/django-simple-history.git#egg=django-simple-history
 django-simple-history
+django-crispy-forms

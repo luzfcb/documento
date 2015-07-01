@@ -8,7 +8,6 @@ from simple_history.models import HistoricalRecords
 USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
-
 # basically is this:
 class Document(models.Model):
     title = models.CharField(blank=True, max_length=500)
@@ -33,28 +32,10 @@ class Document(models.Model):
     def __unicode__(self):
         return "{}".format(self.content)
 
+    @property
+    def _history_user(self):
+        return self.modified_by
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @_history_user.setter
+    def _history_user(self, value):
+        self.modified_by = value

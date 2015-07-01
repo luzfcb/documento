@@ -1,0 +1,48 @@
+{% extends "base_template.html" %}
+
+
+{% block conteudo %}
+    <div class="ui list">
+        <div class="item">
+            <a class="header" href="{% url "livro_create" %}">Cadastrar Novo Livro</a>
+            <div class="description">
+               Vai para a pagina de cadastro de livros chatos
+            </div>
+        </div>
+
+        <div class="item">
+            <a class="header" href="{% url "livro_list" %}">Listar Livros</a>
+            <div class="description">
+               Vai para a pagina que lista livros chatos
+            </div>
+        </div>
+
+        <div class="item">
+            <a class="header" href="{% url "pizza_create" %}">Cadastrar Nova Pizza</a>
+            <div class="description">
+               Vai para a pagina de cadastro de pizzas horriveis
+            </div>
+        </div>
+
+        <div class="item">
+            <a class="header" href="{% url "pizza_list" %}">Listar Pizzas</a>
+            <div class="description">
+               Vai para a pagina que lista pizzas gostosas
+            </div>
+        </div>
+        <div class="item">
+            <a class="header" href="{% url "um_create" %}">Cadastrar Nova "UM"</a>
+            <div class="description">
+               Vai para a pagina de cadastro de "um" horriveis
+            </div>
+        </div>
+
+        <div class="item">
+            <a class="header" href="{% url "um_list" %}">Listar "UM"s</a>
+            <div class="description">
+               Vai para a pagina que lista "um"
+            </div>
+        </div>
+    </div>
+
+{% endblock conteudo %}
