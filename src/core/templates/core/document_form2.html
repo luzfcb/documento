@@ -12,7 +12,7 @@
     {% if history_records_object_list %}
         <ul>
             {% for hobject in history_records_object_list %}
-                <li>{{ hobject }} - <a href="{% url "document_revert" hobject.pk %}">Visualizar/restaurar - {{ hobject.pk }}</a></li>
+                <li>{{ hobject }} - <a href="{{ hobject.pk }}">Visualizar/restaurar - {{ hobject.pk }}</a></li>
             {% endfor %}
         </ul>
         {% if history_records_is_paginated %}

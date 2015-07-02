@@ -15,8 +15,8 @@ urlpatterns = [
         views.DocumentUpdateView.as_view(),
         name='document_update'
         ),
-    # url(r'^versions/(?P<pk>\d+)/$',
-    #     views.DocumentVersionsView.as_view(),
-    #     name='documento_versions'
-    #     ),
+    url(r'^versions/(?P<pk>\d+)/$',
+        views.DocumentRevertView.as_view(),
+        name='document_revert'
+        ),
 ]

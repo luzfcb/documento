@@ -20,8 +20,21 @@ class SaveHelperFormMixin(object):
 
 
 
+class RevertHelper(FormHelper):
+    def __init__(self, form=None):
+        super(RevertHelper, self).__init__(form)
+        self.layout.append(Submit(name='revert', value='Reverter'))
+        self.form_show_errors = True
+        self.render_required_fields = True
 
 class DocumentForm(SaveHelperFormMixin, forms.ModelForm):
     class Meta:
         model = Document
         fields = '__all__'
+
+
+class DocumentRevertForm(RevertHelper, forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = '__all__'
+

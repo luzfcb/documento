@@ -1,27 +1,10 @@
-from django.core.exceptions import ImproperlyConfigured
-from django.core.paginator import Paginator, InvalidPage
-from django.core.urlresolvers import reverse_lazy
-from django.forms import modelform_factory
-from django.utils.translation import ugettext as _
 
-# Create your views here.
+from django.core.exceptions import ImproperlyConfigured
+from django.core.paginator import InvalidPage, Paginator
 from django.db.models import QuerySet
 from django.http import Http404
 from django.utils import six
-from django.views import generic
-from .forms import DocumentForm, DocumentRevertForm
-from .models import Document
-
-
-class DocumentListView(generic.ListView):
-    model = Document
-
-
-class DocumentCreateView(generic.CreateView):
-    template_name = 'core/document_form.html'
-    model = Document
-    form_class = DocumentForm
-    success_url = reverse_lazy('document_list')
+from django.utils.translation import ugettext as _
 
 
 class HistoryRecordViewMixin(object):
@@ -197,98 +180,4 @@ class HistoryRecordViewMixin(object):
                     % {'class_name': self.__class__.__name__})
 
         return super(HistoryRecordViewMixin, self).get(self, request, *args, **kwargs)
-
-
-
-
-class DocumentUpdateView(HistoryRecordViewMixin, generic.DetailView):
-    template_name = 'core/document_form.html'
-    model = Document
-    form_class = DocumentForm
-    success_url = reverse_lazy('document_list')
-    history_records_paginate_by = 2
-    history_records_field_name = ''
-
-class RevertFromHistoryRecordViewMixin(object):
-    history_records_field_name = None
-
-    def get_history_records_field_name(self):
-        """
-        Return the model HistoricalRecords field name to use get the history queryset.
-        """
-        return self.history_records_field_name if self.history_records_field_name else 'historico_modificacoes'
-
-    def get_object(self, queryset=None):
-        """
-        Returns the object the view is displaying.
-
-        By default this requires `self.queryset` and a `pk` or `slug` argument
-        in the URLconf, but subclasses can override this to return any object.
-        """
-        # Use a custom queryset if provided; this is required for subclasses
-        # like DateDetailView
-        if queryset is None:
-            queryset = self.get_queryset()
-
-        # Next, try looking up by primary key.
-        pk = self.kwargs.get(self.pk_url_kwarg, None)
-        slug = self.kwargs.get(self.slug_url_kwarg, None)
-        if pk is not None:
-            queryset = queryset.filter(pk=pk)
-
-        # Next, try looking up by slug.
-        if slug is not None and (pk is None or self.query_pk_and_slug):
-            slug_field = self.get_slug_field()
-            queryset = queryset.filter(**{slug_field: slug})
-
-        # If none of those are defined, it's an error.
-        if pk is None and slug is None:
-            raise AttributeError("Generic detail view %s must be called with "
-                                 "either an object pk or a slug."
-                                 % self.__class__.__name__)
-
-        try:
-            # Get the single item from the filtered queryset
-            obj = queryset.get()
-        except queryset.model.DoesNotExist:
-            raise Http404(_("No %(verbose_name)s found matching the query") %
-                          {'verbose_name': queryset.model._meta.verbose_name})
-        return obj
-
-    def get_queryset(self):
-        """
-        Return the `QuerySet` that will be used to look up the object.
-
-        Note that this method is called by the default implementation of
-        `get_object` and may not be called if `get_object` is overridden.
-        """
-        if self.queryset is None:
-            if self.model:
-                queryset = getattr(self.model, self.get_history_records_field_name()).all()
-                return queryset
-            else:
-                raise ImproperlyConfigured(
-                    "%(cls)s is missing a QuerySet. Define "
-                    "%(cls)s.model, %(cls)s.queryset, or override "
-                    "%(cls)s.get_queryset()." % {
-                        'cls': self.__class__.__name__
-                    }
-                )
-        return self.queryset.all()
-
-
-
-
-class DocumentRevertView(RevertFromHistoryRecordViewMixin, generic.UpdateView):
-    template_name = 'core/document_form2.html'
-    model = Document
-    form_class = DocumentRevertForm
-    success_url = reverse_lazy('document_list')
-    # history_records_paginate_by = 2
-    # history_records_field_name = ''
-
-
-
-
-
 
