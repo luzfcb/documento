@@ -9,12 +9,14 @@ from django.db.models import QuerySet
 from django.http import Http404
 from django.utils import six
 from django.views import generic
-from .forms import DocumentForm, DocumentRevertForm
-from .models import Document
+from .forms import DocumentForm, DocumentRevertForm, SaveHelper, RevertHelper, PessoaRevertForm, PessoaSaveForm, \
+    ReadOnlyFieldsMixin
+from .models import Document, Pessoa
 
 
 class DocumentListView(generic.ListView):
     model = Document
+    ordering = ['-modified_at', ]
 
 
 class DocumentCreateView(generic.CreateView):
@@ -25,11 +27,10 @@ class DocumentCreateView(generic.CreateView):
 
 
 class HistoryRecordViewMixin(object):
-
     """
     A mixin for views manipulating multiple django-simple-history HistoricalRecords of object.
     """
-    history_records_allow_empty = False
+    history_records_allow_empty = True
     history_records_queryset = None
     history_records_paginate_by = None
     history_records_paginate_orphans = 0
@@ -156,7 +157,8 @@ class HistoryRecordViewMixin(object):
         history_records_page_size = self.get_history_records_paginate_by(history_records_queryset)
         history_records_context_object_name = self.get_history_records_context_object_name()
         if history_records_page_size:
-            history_records_paginator, history_records_page, history_records_queryset, history_records_is_paginated = self.paginate_history_records_queryset(  # noqa
+            history_records_paginator, history_records_page, history_records_queryset, history_records_is_paginated = self.paginate_history_records_queryset(
+                # noqa
                 history_records_queryset, history_records_page_size)
             context = {
                 'history_records_paginator': history_records_paginator,
@@ -199,9 +201,7 @@ class HistoryRecordViewMixin(object):
         return super(HistoryRecordViewMixin, self).get(self, request, *args, **kwargs)
 
 
-
-
-class DocumentUpdateView(HistoryRecordViewMixin, generic.DetailView):
+class DocumentUpdateView(HistoryRecordViewMixin, generic.UpdateView):
     template_name = 'core/document_form.html'
     model = Document
     form_class = DocumentForm
@@ -209,14 +209,36 @@ class DocumentUpdateView(HistoryRecordViewMixin, generic.DetailView):
     history_records_paginate_by = 2
     history_records_field_name = ''
 
-class RevertFromHistoryRecordViewMixin(object):
+
+class RevertFromHistoryRecordViewMixin(generic.UpdateView):
     history_records_field_name = None
+
+    def get_form(self, form_class=None):
+        if form_class:
+            class ReadOnlyForm(ReadOnlyFieldsMixin, form_class):
+                pass
+        return super(RevertFromHistoryRecordViewMixin, self).get_form(ReadOnlyForm)
+
+    def get_form_class(self):
+        formReference = super(RevertFromHistoryRecordViewMixin, self).get_form_class()
+
+        class ReadOnlyForm(ReadOnlyFieldsMixin, formReference):
+            pass
+
+        return ReadOnlyForm
 
     def get_history_records_field_name(self):
         """
         Return the model HistoricalRecords field name to use get the history queryset.
         """
-        return self.history_records_field_name if self.history_records_field_name else 'historico_modificacoes'
+        if not self.history_records_field_name:
+            raise ImproperlyConfigured(
+                "%(cls)s is missing a %(cls)s.history_records_field_name. Define "
+                "%(cls)s.history_records_field_name that the same value has HistoryRecords field defined into model" % {
+                    'cls': self.__class__.__name__
+                })
+        # return self.history_records_field_name if self.history_records_field_name else 'historico_modificacoes'
+        return self.history_records_field_name
 
     def get_object(self, queryset=None):
         """
@@ -234,7 +256,7 @@ class RevertFromHistoryRecordViewMixin(object):
         pk = self.kwargs.get(self.pk_url_kwarg, None)
         slug = self.kwargs.get(self.slug_url_kwarg, None)
         if pk is not None:
-            queryset = queryset.filter(pk=pk)
+            queryset = queryset.filter(history_id=pk)
 
         # Next, try looking up by slug.
         if slug is not None and (pk is None or self.query_pk_and_slug):
@@ -253,7 +275,7 @@ class RevertFromHistoryRecordViewMixin(object):
         except queryset.model.DoesNotExist:
             raise Http404(_("No %(verbose_name)s found matching the query") %
                           {'verbose_name': queryset.model._meta.verbose_name})
-        return obj
+        return obj.instance
 
     def get_queryset(self):
         """
@@ -277,8 +299,6 @@ class RevertFromHistoryRecordViewMixin(object):
         return self.queryset.all()
 
 
-
-
 class DocumentRevertView(RevertFromHistoryRecordViewMixin, generic.UpdateView):
     template_name = 'core/document_form2.html'
     model = Document
@@ -288,7 +308,32 @@ class DocumentRevertView(RevertFromHistoryRecordViewMixin, generic.UpdateView):
     # history_records_field_name = ''
 
 
+class PessoaListView(generic.ListView):
+    model = Pessoa
 
 
+class PessoaCreateView(generic.CreateView):
+    model = Pessoa
+    form_class = PessoaSaveForm
+    success_url = reverse_lazy('pessoa_list')
 
 
+class PessoaUpdateView(HistoryRecordViewMixin, generic.UpdateView):
+    model = Pessoa
+    form_class = PessoaSaveForm
+    success_url = reverse_lazy('pessoa_list')
+
+
+class PessoaHistoryView(HistoryRecordViewMixin, generic.DetailView):
+    model = Pessoa
+
+
+class PessoaRevertView(RevertFromHistoryRecordViewMixin, generic.UpdateView):
+    model = Pessoa
+    history_records_field_name = 'historico_modificacoes'
+    form_class = PessoaRevertForm
+    success_url = reverse_lazy('pessoa_list')
+
+
+class PessoaIndexView(generic.TemplateView):
+    template_name = 'core/pessoa_index.html'

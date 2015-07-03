@@ -1,0 +1,7 @@
+{% extends "core/base.html" %}
+
+{% block conteudo %}
+    <a href="{% url 'pessoa_home' %}">Pessoa Home</a>
+    <a href="{% url 'pessoa_list' %}">Listar pessoas</a>
+    <a href="{% url 'pessoa_create' %}">Criar Pessoa</a>
+{% endblock conteudo %}

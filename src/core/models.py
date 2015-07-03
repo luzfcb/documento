@@ -39,3 +39,12 @@ class Document(models.Model):
     @_history_user.setter
     def _history_user(self, value):
         self.modified_by = value
+
+
+class Pessoa(models.Model):
+    conteudo = models.TextField(blank=True)
+
+    historico_modificacoes = HistoricalRecords()
+
+    def __unicode__(self):
+        return "{}".format(self.conteudo)

@@ -1,0 +1,25 @@
+{% extends "core/pessoa_base.html" %}
+{% load crispy_forms_tags %}
+{% load bootstrap_pagination %}
+
+
+{% block conteudo %}
+    {{ block.super }}
+
+
+    {% if form %}
+        {% crispy form %}
+    {% endif %}
+    {% if history_records_object_list %}
+        <ul>
+            {% for hobject in history_records_object_list %}
+                <li>{{ hobject }} - <a href="{% url "pessoa_revert" hobject.pk %}">Visualizar/restaurar - {{ hobject.pk }}</a></li>
+            {% endfor %}
+        </ul>
+        {% if history_records_is_paginated %}
+            {% bootstrap_paginate history_records_page_obj url_param_name=history_records_page_kwarg %}
+        {% endif %}
+    {% endif %}
+
+
+{% endblock conteudo %}
