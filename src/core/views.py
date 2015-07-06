@@ -10,7 +10,7 @@ from django.http import Http404
 from django.utils import six
 from django.views import generic
 from .forms import DocumentForm, DocumentRevertForm, SaveHelper, RevertHelper, PessoaRevertForm, PessoaSaveForm, \
-    ReadOnlyFieldsMixin
+    ReadOnlyFieldsMixin, new_readonly_form, ReadOnlyPessoaFodona
 from .models import Document, Pessoa
 
 
@@ -25,6 +25,11 @@ class DocumentCreateView(generic.CreateView):
     form_class = DocumentForm
     success_url = reverse_lazy('document_list')
 
+
+
+class MissingHistoryRecordsField(Exception):
+    """django-simple-history is somehow improperly configured"""
+    pass
 
 class HistoryRecordViewMixin(object):
     """
@@ -45,7 +50,19 @@ class HistoryRecordViewMixin(object):
         """
         Return the model HistoricalRecords field name to use get the history queryset.
         """
-        return self.history_records_field_name if self.history_records_field_name else 'historico_modificacoes'
+        if hasattr(self.model._meta, 'simple_history_manager_attribute'):
+            return getattr(self.model._meta, 'simple_history_manager_attribute')
+        else:
+            raise MissingHistoryRecordsField(
+                "The model %(cls)s does not have a HistoryRecords field. Define a HistoryRecords() field into %(cls)s"
+                " model class, after do this, run:"
+                "\npython manage.py makemigrations %(app_label)s"
+                "\npython manage.py migrate %(app_label)s"
+                "\npython manage.py populate_history %(app_label)s.%(cls)s " % {
+                    'app_label': self.model._meta.app_label,
+                    'cls': self.model.__name__
+                }
+            )
 
     def get_history_records_queryset(self):
         """
@@ -60,7 +77,6 @@ class HistoryRecordViewMixin(object):
                 queryset = queryset.all()
         elif self.model is not None:
             model_instance = self.get_object()
-            assert hasattr(model_instance, self.get_history_records_field_name())
             queryset = getattr(model_instance, self.get_history_records_field_name()).all()
         else:
             raise ImproperlyConfigured(
@@ -213,19 +229,16 @@ class DocumentUpdateView(HistoryRecordViewMixin, generic.UpdateView):
 class RevertFromHistoryRecordViewMixin(generic.UpdateView):
     history_records_field_name = None
 
-    def get_form(self, form_class=None):
-        if form_class:
-            class ReadOnlyForm(ReadOnlyFieldsMixin, form_class):
-                pass
-        return super(RevertFromHistoryRecordViewMixin, self).get_form(ReadOnlyForm)
+    # def get_form(self, form_class=None):
+    #     form = newReadOnlyForm(form_class)
+    #     return super(RevertFromHistoryRecordViewMixin, self).get_form(form)
 
     def get_form_class(self):
-        formReference = super(RevertFromHistoryRecordViewMixin, self).get_form_class()
-
-        class ReadOnlyForm(ReadOnlyFieldsMixin, formReference):
-            pass
-
-        return ReadOnlyForm
+        form_reference = super(RevertFromHistoryRecordViewMixin, self).get_form_class()
+        if issubclass(form_reference, ReadOnlyFieldsMixin):
+            return form_reference
+        else:
+            return new_readonly_form(form_reference)
 
     def get_history_records_field_name(self):
         """
@@ -331,7 +344,7 @@ class PessoaHistoryView(HistoryRecordViewMixin, generic.DetailView):
 class PessoaRevertView(RevertFromHistoryRecordViewMixin, generic.UpdateView):
     model = Pessoa
     history_records_field_name = 'historico_modificacoes'
-    form_class = PessoaRevertForm
+    form_class = ReadOnlyPessoaFodona  # PessoaRevertForm
     success_url = reverse_lazy('pessoa_list')
 
 

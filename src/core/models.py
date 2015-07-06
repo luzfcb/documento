@@ -44,6 +44,8 @@ class Document(models.Model):
 class Pessoa(models.Model):
     conteudo = models.TextField(blank=True)
 
+    user = models.ForeignKey(to=USER_MODEL, to_field='username', null=True)
+
     historico_modificacoes = HistoricalRecords()
 
     def __unicode__(self):

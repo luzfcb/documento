@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('core', '0002_pessoa'),
+        ('core', '0003_pessoa_user'),
     ]
 
     operations = [
@@ -23,6 +23,7 @@ class Migration(migrations.Migration):
                 ('history_date', models.DateTimeField()),
                 ('history_type', models.CharField(max_length=1, choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')])),
                 ('history_user', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, null=True)),
+                ('user', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_constraint=False, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
                 'ordering': ('-history_date', '-history_id'),

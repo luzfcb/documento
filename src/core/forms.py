@@ -33,7 +33,9 @@ class RevertHelperFormMixin(object):
         super(RevertHelperFormMixin, self).__init__(*args, **kwargs)
         self.helper = RevertHelper(self)
 
+
 from django.utils import six
+
 class ReadOnlyFieldsMixin(object):
     readonly_fields = ()
     all_fields = False
@@ -48,9 +50,21 @@ class ReadOnlyFieldsMixin(object):
 
     def clean(self):
         cleaned_data = super(ReadOnlyFieldsMixin, self).clean()
-        for field in self.readonly_fields:
-            cleaned_data[field] = getattr(self.instance, field)
-        return cleaned_data
+        if self.all_fields:
+            for field_name, field in six.iteritems(self.fields):
+                cleaned_data[field_name] = getattr(self.instance, field_name)
+            return cleaned_data
+        else:
+            for field_name in self.readonly_fields:
+                cleaned_data[field_name] = getattr(self.instance, field_name)
+            return cleaned_data
+
+
+def new_readonly_form(klass, all_fields=True, readonly_fields=()):
+    name = "ReadOnly{}".format(klass.__name__)
+    klass_fields = {'all_fields': all_fields, 'readonly_fields': readonly_fields}
+    return type(name, (ReadOnlyFieldsMixin, klass), klass_fields)
+
 
 
 class DocumentForm(SaveHelperFormMixin, forms.ModelForm):
@@ -75,3 +89,7 @@ class PessoaSaveForm(SaveHelperFormMixin, forms.ModelForm):
     class Meta:
         model = Pessoa
         fields = '__all__'
+
+
+class ReadOnlyPessoaFodona(ReadOnlyFieldsMixin, PessoaRevertForm):
+    pass
