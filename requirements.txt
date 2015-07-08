@@ -1,5 +1,7 @@
+Django>=1.8
 django-model-utils
 Werkzeug
+Pillow
 django-extensions
 ipython
 bpython
@@ -11,6 +13,9 @@ django-reversion-extras
 django-debug-toolbar
 # -e git://github.com/treyhunner/django-simple-history.git#egg=django-simple-history
 # django-simple-history
-django-crispy-forms
+#django-crispy-forms
+-e git://github.com/maraujop/django-crispy-forms.git@dev#egg=django-crispy-forms
 django-bootstrap-pagination
 autopep8
+django-summernote
+django-wysiwyg-redactor

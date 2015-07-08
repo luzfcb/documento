@@ -4,6 +4,7 @@ from django.db.models import Max
 from django.utils import timezone
 from django.conf import settings
 from model_utils import tracker
+from redactor.fields import RedactorField
 from .fields import CounterField
 from simple_history.models import HistoricalRecords
 
@@ -31,6 +32,8 @@ class Document(models.Model):
 
     historico_modificacoes = HistoricalRecords()
 
+    # certificacao_digital, pega fields relavantes e gera identificador unico para os dados e bloqueia para edicao
+
     def __unicode__(self):
         return "{}".format(self.content)
 
@@ -42,6 +45,7 @@ class Document(models.Model):
     def _history_user(self, value):
         self.modified_by = value
 
+
 class AutoIncrementOnSaveField(models.IntegerField):
     def pre_save(self, model_instance, add):
         super(AutoIncrementOnSaveField, self).pre_save(model_instance, add)
@@ -49,20 +53,27 @@ class AutoIncrementOnSaveField(models.IntegerField):
 
 class Pessoa(models.Model):
     conteudo = models.TextField(blank=True)
-
+    # conteudo = RedactorField(
+    #
+    #
+    #     allow_file_upload=True,
+    #     allow_image_upload=True
+    # )
     user = models.ForeignKey(to=USER_MODEL, null=True)
 
     historico_modificacoes = HistoricalRecords()
 
     # a = models.DateTimeField(auto_now_add=True)
     contador = CounterField()
-    contador2 = models.IntegerField(default=0, auto_created=True)
+    contador2 = models.IntegerField(default=0, auto_created=True, editable=False)
 
     def __unicode__(self):
-        return "{}".format(self.conteudo)
+        return "{} - {} - {} - {}".format(self.conteudo, self.user, self.contador, self.contador2)
 
     def save(self, *args, **kwargs):
-
-        self.contador2 = self.historico_modificacoes.aggregate(Max('contador2')).values()[0] + 1
+        if self.pk:
+            max_db_value = self.historico_modificacoes.aggregate(Max('contador2')).values()[0]
+            self.contador2 = max_db_value + 1 if max_db_value >= self.contador2 else self.contador2 + 1
+            self.conteudo = "{} - {}".format(self.conteudo, self.contador2)
 
         super(Pessoa, self).save(*args, **kwargs)

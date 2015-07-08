@@ -25,9 +25,9 @@ SECRET_KEY = '^8@#&52i=9odrdi97%(-!z+(aa77st2py(gmt@xui^iw&t!5m#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = DEBUG
+TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', ]
 
 
 # Application definition
@@ -39,7 +39,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core',
     'model_utils',
     'django_extensions',
 
@@ -47,7 +46,9 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'crispy_forms',
     'bootstrap_pagination',
-
+    'core',
+    'redactor',
+    'django_summernote',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -122,3 +123,63 @@ STATICFILES_DIRS = (
 )
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+REDACTOR_OPTIONS = {'lang': 'pt_br', 'plugins': ['video', 'fullscreen']}
+
+REDACTOR_UPLOAD_HANDLER = 'redactor.handlers.UUIDUploader'
+
+SUMMERNOTE_CONFIG = {
+    # Using SummernoteWidget - iframe mode
+    'iframe': True,  # or set False to use SummernoteInplaceWidget - no iframe mode
+
+    # Using Summernote Air-mode
+    'airMode': False,
+
+    # Use native HTML tags (`<b>`, `<i>`, ...) instead of style attributes
+    # (Firefox, Chrome only)
+    'styleWithTags': True,
+
+    # Set text direction : 'left to right' is default.
+    'direction': 'ltr',
+
+    # Change editor size
+    'width': '100%',
+    'height': '480',
+
+    # Use proper language setting automatically (default)
+    'lang': None,
+
+    # Or, set editor language/locale forcely
+    #'lang': 'ko-KR',
+
+    # Customize toolbar buttons
+    # 'toolbar': [
+    #     ['style', ['style']],
+    #     ['style', ['bold', 'italic', 'underline', 'clear']],
+    #     ['para', ['ul', 'ol', 'height']],
+    #     ['insert', ['link']],
+    # ],
+
+    # Need authentication while uploading attachments.
+    'attachment_require_authentication': False,
+
+    # Set `upload_to` function for attachments.
+    #'attachment_upload_to': my_custom_upload_to_func(),
+
+    # Set custom storage class for attachments.
+    #'attachment_storage_class': 'my.custom.storage.class.name',
+
+    # Set external media files for SummernoteInplaceWidget.
+    # !!! Be sure to put {{ form.media }} in template before initiate summernote.
+    # 'inplacewidget_external_css': (
+    #     '//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css',
+    #     '//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css',
+    # ),
+    # 'inplacewidget_external_js': (
+    #     '//code.jquery.com/jquery-1.9.1.min.js',
+    #     '//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js',
+    # ),
+}

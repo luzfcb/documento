@@ -2,6 +2,8 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django import forms
+from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
+from redactor.widgets import RedactorEditor
 from simple_history.forms import ReadOnlyFieldsMixin
 
 from .models import Document, Pessoa
@@ -35,7 +37,6 @@ class RevertHelperFormMixin(object):
         self.helper = RevertHelper(self)
 
 
-
 class DocumentForm(SaveHelperFormMixin, forms.ModelForm):
     class Meta:
         model = Document
@@ -55,20 +56,52 @@ class PessoaRevertForm(RevertHelperFormMixin, forms.ModelForm):
 
 
 class PessoaSaveForm(SaveHelperFormMixin, forms.ModelForm):
+
+
     class Meta:
         model = Pessoa
         fields = '__all__'
+        widgets = {
+            #'conteudo': RedactorEditor(),
+            'bar': SummernoteWidget(),
+        }
 
 
 class PessoaSaveForm2(SaveHelperFormMixin, forms.ModelForm):
+
     class Meta:
         model = Pessoa
         fields = '__all__'
         exclude = ['user']
+        widgets = {
+            #'conteudo': SummernoteWidget(),
+            'bar': SummernoteInplaceWidget(),
+            'jar': RedactorEditor(),
+        }
 
 
 class ReadOnlyPessoaFodona(ReadOnlyFieldsMixin, PessoaRevertForm):
     all_fields = True
 
+
 class ReadOnlyPessoaFodona2(ReadOnlyFieldsMixin, PessoaSaveForm2):
     pass
+
+
+class EditorForm(SaveHelperFormMixin, forms.Form):
+    foo = forms.Textarea()
+    bar = forms.Textarea()
+    jar = forms.Textarea()
+
+    class Meta:
+        model = Pessoa
+        fields = '__all__'
+        exclude = ['user']
+        widgets = {
+            'foo': SummernoteWidget(),
+            'bar': SummernoteInplaceWidget(),
+            'jar': RedactorEditor(),
+        }
+
+
+

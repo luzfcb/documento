@@ -24,6 +24,8 @@
     <!-- Custom Fonts -->
     <link href="{% static "bower_components/font-awesome/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
 
+    <!-- jQuery -->
+    <script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -38,7 +40,7 @@
 <div id="wrapper">
 
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-static-top"  role="navigation" style="margin-bottom: 0">
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
         {% block navbar %}
 
             <div class="navbar-header">
@@ -204,8 +206,6 @@
 </div>
 <!-- /#wrapper -->
 
-<!-- jQuery -->
-<script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
 
 <!-- Bootstrap Core JavaScript -->
 <script src="{% static "bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>

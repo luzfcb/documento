@@ -45,4 +45,5 @@ urlpatterns = [
         views.PessoaRevertView.as_view(),
         name='pessoa_revert'
         ),
+
 ]

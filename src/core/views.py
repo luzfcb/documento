@@ -43,12 +43,14 @@ class PessoaListView(generic.ListView):
 
 
 class PessoaCreateView(generic.CreateView):
+    template_name = 'core/pessoa_form.html'
     model = Pessoa
     form_class = PessoaSaveForm
     success_url = reverse_lazy('pessoa_list')
 
 
 class PessoaUpdateView(HistoryRecordListViewMixin, generic.UpdateView):
+    template_name = 'core/pessoa_form.html'
     model = Pessoa
     form_class = PessoaSaveForm
     success_url = reverse_lazy('pessoa_list')
