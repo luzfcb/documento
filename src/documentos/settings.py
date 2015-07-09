@@ -49,6 +49,8 @@ INSTALLED_APPS = (
     'core',
     'redactor',
     'django_summernote',
+    'autoadmin',
+    'sequence_field',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -126,6 +128,14 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+AUTOADMIN_USERNAME = 'admin'
+
+AUTOADMIN_EMAIL = 'admin@admin.com'
+
+AUTOADMIN_PASSWORD = 'admin'
+
+
 
 REDACTOR_OPTIONS = {'lang': 'pt_br', 'plugins': ['video', 'fullscreen']}
 

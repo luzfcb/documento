@@ -1,12 +1,12 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import Document, Pessoa, HistoricalPessoa
+from .models import DocumentContent, Pessoa, HistoricalPessoa, Document
 
 
 # Register your models here.
-@admin.register(Document)
-class DocumentoAdmin(SimpleHistoryAdmin):
+@admin.register(DocumentContent)
+class DocumentContentAdmin(SimpleHistoryAdmin):
     list_display = ['content', 'created_at', 'created_by']
 
 # Register your models here.
@@ -17,3 +17,11 @@ class PessoaAdmin(SimpleHistoryAdmin):
 @admin.register(HistoricalPessoa)
 class HistorialPessoaAdmin(admin.ModelAdmin):
     pass
+
+class DocumentContentInline(admin.StackedInline):
+    model = DocumentContent
+
+@admin.register(Document)
+class Document(admin.ModelAdmin):
+    inlines = [DocumentContentInline]
+

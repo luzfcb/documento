@@ -19,3 +19,5 @@ django-bootstrap-pagination
 autopep8
 django-summernote
 django-wysiwyg-redactor
+django-autoadmin
+-e git://github.com/luzfcb/django-sequence-field.git@many-changes#egg=django-sequence-field

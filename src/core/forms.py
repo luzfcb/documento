@@ -6,7 +6,7 @@ from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 from redactor.widgets import RedactorEditor
 from simple_history.forms import ReadOnlyFieldsMixin
 
-from .models import Document, Pessoa
+from .models import DocumentContent, Pessoa
 
 
 class SaveHelper(FormHelper):
@@ -39,13 +39,13 @@ class RevertHelperFormMixin(object):
 
 class DocumentForm(SaveHelperFormMixin, forms.ModelForm):
     class Meta:
-        model = Document
+        model = DocumentContent
         fields = '__all__'
 
 
 class DocumentRevertForm(RevertHelperFormMixin, forms.ModelForm):
     class Meta:
-        model = Document
+        model = DocumentContent
         fields = '__all__'
 
 

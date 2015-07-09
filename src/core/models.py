@@ -6,13 +6,16 @@ from django.conf import settings
 from model_utils import tracker
 from redactor.fields import RedactorField
 from .fields import CounterField
+import sequence_field
 from simple_history.models import HistoricalRecords
 
 USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
 # basically is this:
-class Document(models.Model):
+class DocumentContent(models.Model):
+    conteudo = models.OneToOneField('Document', related_name="conteudo", null=True, on_delete=models.SET_NULL,
+                                    editable=False)
     title = models.CharField(blank=True, max_length=500)
     content = models.TextField(blank=True)
 
@@ -46,9 +49,14 @@ class Document(models.Model):
         self.modified_by = value
 
 
-class AutoIncrementOnSaveField(models.IntegerField):
-    def pre_save(self, model_instance, add):
-        super(AutoIncrementOnSaveField, self).pre_save(model_instance, add)
+class Document(models.Model):
+    content_tracker = tracker.FieldTracker()
+    sequence = sequence_field.SequenceField(
+        key='document.sequence.1',
+        template='%Y%m%d%(code)s%NNNNNNNN',
+        params={'code': 'v'},
+        auto=True
+    )
 
 
 class Pessoa(models.Model):

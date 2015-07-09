@@ -4,19 +4,19 @@ from . import views
 
 urlpatterns = [
     url(r'^list/$',
-        views.DocumentListView.as_view(),
+        views.DocumentContentListView.as_view(),
         name='document_list'
         ),
     url(r'^create/$',
-        views.DocumentCreateView.as_view(),
+        views.DocumentContentCreateView.as_view(),
         name='document_create'
         ),
     url(r'^update/(?P<pk>\d+)/$',
-        views.DocumentUpdateView.as_view(),
+        views.DocumentContentUpdateView.as_view(),
         name='document_update'
         ),
     url(r'^versions/(?P<pk>\d+)/$',
-        views.DocumentRevertView.as_view(),
+        views.DocumentContentRevertView.as_view(),
         name='document_revert'
         ),
 
