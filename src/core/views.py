@@ -2,11 +2,12 @@ from django.core.urlresolvers import reverse_lazy
 
 # Create your views here.
 from django.views import generic
+from django.views.generic.base import ContextMixin
 from extra_views import InlineFormSetView, CreateWithInlinesView, InlineFormSet
 from simple_history.views import HistoryRecordListViewMixin, RevertFromHistoryRecordViewMixin
 from .forms import (DocumentForm, DocumentRevertForm, PessoaSaveForm,
                     ReadOnlyPessoaFodona, ReadOnlyPessoaFodona2)
-from .models import DocumentContent, Pessoa, Comentario, Foto
+from .models import DocumentContent, Pessoa
 
 
 class DocumentContentListView(generic.ListView):
@@ -72,5 +73,5 @@ class PessoaIndexView(generic.TemplateView):
     template_name = 'core/pessoa_index.html'
 
 
-class DocumentView(generic.View):
-    pass
+class DocumentView(generic.TemplateView):
+    template_name = 'core/document_master.html'

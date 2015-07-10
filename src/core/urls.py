@@ -20,7 +20,6 @@ urlpatterns = [
         name='document_revert'
         ),
 
-
     url(r'^phome/$',
         views.PessoaListView.as_view(),
         name='pessoa_home'
@@ -45,12 +44,9 @@ urlpatterns = [
         views.PessoaRevertView.as_view(),
         name='pessoa_revert'
         ),
-    url(r'^comentario/(?P<pk>\d+)/$',
-        views.ComentarioView.as_view(),
-        name='comentario'
+    url(r'^documento/$',
+        views.DocumentView.as_view(),
+        name='document_master'
         ),
-    url(r'^criarc/$',
-        views.ComentarioCreateView.as_view(),
-        name='comentario_criar'
-        ),
+
 ]

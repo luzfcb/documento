@@ -1,7 +1,7 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import DocumentContent, Pessoa, HistoricalPessoa, Document, Comentario, Foto
+from .models import DocumentContent, Pessoa, HistoricalPessoa, Document
 
 
 # Register your models here.
@@ -26,10 +26,3 @@ class Document(admin.ModelAdmin):
     inlines = [DocumentContentInline]
 
 
-@admin.register(Comentario)
-class ComentarioAdmin(admin.ModelAdmin):
-    pass
-
-@admin.register(Foto)
-class FotoAdmin(admin.ModelAdmin):
-    pass

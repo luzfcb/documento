@@ -2,6 +2,7 @@
 
 {% block conteudo %}
     {{ block.super }}
+    <a href="{% url 'document_master' %}">document_master</a>
     <a href="{% url 'document_list' %}">Listar</a>
     <a href="{% url 'document_create' %}">Criar</a>
 
