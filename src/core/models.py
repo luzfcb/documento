@@ -12,6 +12,10 @@ from simple_history.models import HistoricalRecords
 USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
+class Document(models.Model):
+    content_tracker = tracker.FieldTracker()
+
+
 # basically is this:
 class DocumentContent(models.Model):
     conteudo = models.OneToOneField('Document', related_name="conteudo", null=True, on_delete=models.SET_NULL,
@@ -49,14 +53,6 @@ class DocumentContent(models.Model):
         self.modified_by = value
 
 
-class Document(models.Model):
-    content_tracker = tracker.FieldTracker()
-    sequence = sequence_field.SequenceField(
-        key='document.sequence.1',
-        template='%Y%m%d%(code)s%NNNNNNNN',
-        params={'code': 'v'},
-        auto=True
-    )
 
 
 class Pessoa(models.Model):
@@ -85,3 +81,4 @@ class Pessoa(models.Model):
             self.conteudo = "{} - {}".format(self.conteudo, self.contador2)
 
         super(Pessoa, self).save(*args, **kwargs)
+

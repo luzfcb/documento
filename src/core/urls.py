@@ -45,5 +45,12 @@ urlpatterns = [
         views.PessoaRevertView.as_view(),
         name='pessoa_revert'
         ),
-
+    url(r'^comentario/(?P<pk>\d+)/$',
+        views.ComentarioView.as_view(),
+        name='comentario'
+        ),
+    url(r'^criarc/$',
+        views.ComentarioCreateView.as_view(),
+        name='comentario_criar'
+        ),
 ]

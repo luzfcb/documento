@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'django_summernote',
     'autoadmin',
     'sequence_field',
+    'extra_views',
 )
 
 MIDDLEWARE_CLASSES = (

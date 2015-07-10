@@ -20,4 +20,6 @@ autopep8
 django-summernote
 django-wysiwyg-redactor
 django-autoadmin
--e git://github.com/luzfcb/django-sequence-field.git@many-changes#egg=django-sequence-field
+# -e git://github.com/luzfcb/django-sequence-field.git@many-changes#egg=django-sequence-field
+# -e git://github.com/AndrewIngram/django-extra-views.git#egg=django-extra-views
+django-extra-views
