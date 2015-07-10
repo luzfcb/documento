@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'autoadmin',
     'sequence_field',
     'extra_views',
+    'django_documentos',
 )
 
 MIDDLEWARE_CLASSES = (
